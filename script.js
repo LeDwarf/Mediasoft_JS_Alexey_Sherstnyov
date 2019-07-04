@@ -6,7 +6,7 @@ a=prompt('Введите первое число',1);
 op=prompt('Введите операцию','+');
 b=prompt('Введите второе число',1);
 
-if(Number.isInteger(a) && Number.isInteger(b))
+if(Number.isInteger(+a) && Number.isInteger(+b))
 {
 	if(op==='+')
 	{
