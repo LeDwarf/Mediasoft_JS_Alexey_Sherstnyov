@@ -1,0 +1,11 @@
+.ground{
+	border: solid #DC4A01 20px;
+	border-collapse: collapse;
+}
+
+.ground_cell{
+	/*Ячейка 15x15 пикселей: сегмент змейки или фрукт*/
+	height: 15px;
+	width: 15px;
+	background: #F7DE27;
+}
