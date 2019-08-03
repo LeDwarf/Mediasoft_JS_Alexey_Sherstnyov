@@ -10,7 +10,7 @@ for (let i = 0; i < height; i++){
 	for (let j = 0; j < width; j++){
 		let cell = document.createElement('td');
 		cell.className = "ground_cell";
-		cell.id = "c"+i+j;
+		cell.id = i+","+j;
 		row.appendChild(cell);
 	}
 	table.appendChild(row);
@@ -18,17 +18,57 @@ for (let i = 0; i < height; i++){
 document.body.appendChild(table);
 
 /*пробуем двигать голову*/
-let cell_id = "c1415"
-let snake_head = document.getElementById(cell_id);
+let cell_x = 14;
+let cell_y = 15;
+let snake_head = document.getElementById(cell_y+","+cell_x);
 snake_head.className = "snake_head";
 
-/*ивент на нажатие D*/
+/*Ивенты на нажатия WASD*/
 document.addEventListener('keydown', function(e) {
-	if (e.code == 'KeyD' && (e.ctrlKey || e.metaKey)) {
-		alert('считал нажатие');
-		/*let cell = document.getElementById(cell_id);
-		cell.className = "ground_cell";
-		cell = document.getElementById(cell_id+1);
-		cell.className = "snake_head";*/
+	if (e.code == 'KeyW') {
+		let cell = document.getElementById(cell_y+","+cell_x);
+		if (cell_y-1 >= 0){
+			cell.className = "ground_cell";
+			cell_y--;
+			cell = document.getElementById(cell_y+","+cell_x);
+			cell.className = "snake_head";
+		}		
+	}
+});
+
+document.addEventListener('keydown', function(e) {
+	if (e.code == 'KeyA') {
+		let cell = document.getElementById(cell_y+","+cell_x);
+		if (cell_x-1 >= 0){
+			cell.className = "ground_cell";
+			cell_x--;
+			cell = document.getElementById(cell_y+","+cell_x);
+			cell.className = "snake_head";
+		}
+	}
+});
+
+document.addEventListener('keydown', function(e) {
+	if (e.code == 'KeyS') {
+		let cell = document.getElementById(cell_y+","+cell_x);	
+		if (cell_y+1 < height){
+			cell.className = "ground_cell";
+			cell_y++;
+			cell = document.getElementById(cell_y+","+cell_x);
+			cell.className = "snake_head";
+		}		
+	}
+});
+
+document.addEventListener('keydown', function(e) {
+	if (e.code == 'KeyD') {
+		let cell = document.getElementById(cell_y+","+cell_x);
+		console.log(cell_x);
+		if (cell_x+1 < width){
+			cell.className = "ground_cell";
+			cell_x++;
+			cell = document.getElementById(cell_y+","+cell_x);
+			cell.className = "snake_head";
+		}
 	}
 });
