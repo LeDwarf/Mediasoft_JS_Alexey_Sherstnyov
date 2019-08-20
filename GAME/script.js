@@ -1,74 +1,141 @@
-let width = 30;
-let height = 30;
+let timer;
+let directx = direct = 0;
+//Размеры поля 
+let fieldSizeX = 20;
+let fieldSizeY = 20;
 
-let table = document.createElement('table');
-table.className = "ground";
+//Массив направлений
+let direction = [
+    [0,1], //вправо
+    [1,0], //вниз
+    [0,-1], //влево
+    [-1,0]]; //вверх
 
-for (let i = 0; i < height; i++){
-	let row = document.createElement('tr');
-	row.className = "ground_row";
-	for (let j = 0; j < width; j++){
-		let cell = document.createElement('td');
-		cell.className = "ground_cell";
-		cell.id = i+","+j;
-		row.appendChild(cell);
-	}
-	table.appendChild(row);
+//Начальные параметры змеи
+let snake = {
+    length : 3,
+    body : [[1,1],[1,2],[1,3]],
+    initialisationSnake : function (){
+        for ( let i = 0; i < this.length; i++){
+            let currentBodyPart = this.body[i];
+            document.getElementById(currentBodyPart.join()).className = 'cell snake';
+        }
+    },
+    move : function (){
+        direct = directx;
+        let body = this.body
+        let head = this.body[this.length-1];
+        let headCell = head.map(function(value, index){ 
+            return value + direction[direct][index] 
+        });
+        compareEatOrGameOver(headCell, body);
+        return headCell;
+    }
+};
+
+window.addEventListener('keydown', keyHandler, false);
+prepareGamePane(fieldSizeX, fieldSizeY);
+ 
+//Разметка поля
+function prepareGamePane (fieldSizeX, fieldSizeY){
+    for ( let x = 0; x < fieldSizeX; x++){
+        let coordinateX = document.createElement('div');
+        document.body.appendChild(coordinateX);
+        coordinateX.className = 'field';
+        for (let y = 0; y < fieldSizeY; y++){
+            let coordinateY = document.createElement('div');
+            coordinateX.appendChild(coordinateY);
+            coordinateY.className = 'cell';
+            coordinateY.id = x+','+y;
+        }
+    }
+    snake.initialisationSnake();
+    makeFood(fieldSizeX, fieldSizeY);
 }
-document.body.appendChild(table);
+ 
+//Рандомная еда
+function makeFood (fieldSizeX, fieldSizeY){
+    let x = Math.round(Math.random() * (fieldSizeX-1));
+    let y = Math.round(Math.random() * (fieldSizeY-1));
+    let food = document.getElementById(x+','+y);
+    if (food.className == 'cell'){
+        food.className = "cell food";
+    } else {
+        makeFood(fieldSizeX, fieldSizeY);
+    }
+    return food;
+}
+ 
+function keyHandler (e){
+    switch (e.code) {
+        case 'KeyA':
+            if (direct != 0){
+                directx = 2;
+            }
+            break;
+        case 'KeyD':
+            if (direct != 2){
+                directx = 0;
+            }
+            break;
+        case 'KeyW':
+            if (direct != 1){
+                directx = 3;
+            }
+            break;
+        case 'KeyS':
+            if (direct != 3){
+                directx = 1;
+            }
+            break;
+        default :
+            return;
+    }
+}
+ 
+//Проверки 
+function compareEatOrGameOver (headCell, body) {
+    let tmp = document.getElementById(headCell.join());
+    if (tmp == null ) {
+        if (headCell[0] == -1)
+            headCell[0] = fieldSizeX - 1;
+        if (headCell[0] == fieldSizeX)
+            headCell[0] = 0;
+        if (headCell[1] == -1)
+            headCell[1] = fieldSizeY - 1;
+        if (headCell[1] == fieldSizeY)
+            headCell[1] = 0;
+        tmp = document.getElementById(headCell.join());
+    }
 
-/*пробуем двигать голову*/
-let cell_x = 14;
-let cell_y = 15;
-let snake_head = document.getElementById(cell_y+","+cell_x);
-snake_head.className = "snake_head";
+    if ( tmp != null && tmp.className == 'cell' ){
+        let removeTail = body.shift();
+        body.push(headCell);
+        document.getElementById(removeTail.join()).className = 'cell';
+        document.getElementById(headCell.join()).className = 'cell snake';
+    } else {
+        if ( tmp != null && tmp.className == 'cell food'){
+            snake.length++;
+            body.push(headCell);
+            document.getElementById(headCell.join()).className = 'cell snake';
+            makeFood(fieldSizeX, fieldSizeY);
+            let score = snake.length-3;
+            document.getElementById('score').innerHTML = 'Счет: '+score;
+        } else {
+            if (tmp.className == 'cell snake'){
+                clearInterval(timer);
+                alert('Счет: ' + (snake.length-3) + '. Нажмите «Заново» чтобы попробовать еще раз');
+            }
+        }
+    }
+}
 
-/*Ивенты на нажатия WASD*/
-document.addEventListener('keydown', function(e) {
-	if (e.code == 'KeyW') {
-		let cell = document.getElementById(cell_y+","+cell_x);
-		if (cell_y-1 >= 0){
-			cell.className = "ground_cell";
-			cell_y--;
-			cell = document.getElementById(cell_y+","+cell_x);
-			cell.className = "snake_head";
-		}		
-	}
-});
+function start () {
+    timer = setInterval(function(){
+        snake.move();
+    },400);
+}
 
-document.addEventListener('keydown', function(e) {
-	if (e.code == 'KeyA') {
-		let cell = document.getElementById(cell_y+","+cell_x);
-		if (cell_x-1 >= 0){
-			cell.className = "ground_cell";
-			cell_x--;
-			cell = document.getElementById(cell_y+","+cell_x);
-			cell.className = "snake_head";
-		}
-	}
-});
-
-document.addEventListener('keydown', function(e) {
-	if (e.code == 'KeyS') {
-		let cell = document.getElementById(cell_y+","+cell_x);	
-		if (cell_y+1 < height){
-			cell.className = "ground_cell";
-			cell_y++;
-			cell = document.getElementById(cell_y+","+cell_x);
-			cell.className = "snake_head";
-		}		
-	}
-});
-
-document.addEventListener('keydown', function(e) {
-	if (e.code == 'KeyD') {
-		let cell = document.getElementById(cell_y+","+cell_x);
-		console.log(cell_x);
-		if (cell_x+1 < width){
-			cell.className = "ground_cell";
-			cell_x++;
-			cell = document.getElementById(cell_y+","+cell_x);
-			cell.className = "snake_head";
-		}
-	}
-});
+function reload () {
+    window.location.reload();
+}

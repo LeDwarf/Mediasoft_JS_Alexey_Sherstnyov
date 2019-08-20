@@ -1,16 +1,59 @@
-.ground{
-	border: solid #DC4A01 20px;
-	border-collapse: collapse;
+body {
+	margin-top: 22px;
+	margin-left: -20px;
+	padding: 0;
+	border: 0;
 }
 
-.ground_cell{
-	/*Ячейка 15x15 пикселей: сегмент змейки или фрукт*/
-	height: 15px;
-	width: 15px;
-	background: #F7DE27;
+.border {
+	z-index: -15;
+	position: absolute;
+	top: 0px;
+	background-color: #F7DE27;
+	left: 0px;
+	width: 500px;
+	height: 560px;
+	border: 20px solid #DC4A01;
 }
 
-.snake_head{
-	/*Голова змеи*/
+button {
+	padding: 7px;
+	font-weight: 600;
+}
+
+.buttons {
+	margin: 20px 10px 20px 140px;
+}
+
+.score {
+	margin-left: 72px;
+	font-size: 31px;
+}
+
+.field {
+	z-index: 30;            
+	height: 23px;
+	margin-left: 53px;
+}
+.cell {
+	margin: 0;
+	display: inline-block;
+	background-color: #F7DE27;
+	width: 22px;
+	height: 22px;
+	border: 1px solid #010;
+	border-radius: 4px;
+	z-index: 30;
+	transition: background-color 0.3s;
+}
+
+.snake {
 	background: #00490A;
+	z-index: 30;
 }
+
+.food {
+	background-color:#FF0000;
+	z-index: 30;
+}
+
